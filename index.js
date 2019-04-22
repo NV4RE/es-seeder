@@ -5,8 +5,7 @@ const random = require("random");
 const uuid = require("uuid/v4");
 
 const client = new Client({
-  node:
-    "https://search-oms-api-x2zgu6znvskqku3imm6rlkeeyq.ap-southeast-1.es.amazonaws.com",
+  node: "",
   apiVersion: "6.6"
 });
 
@@ -64,9 +63,9 @@ const createOrder = () =>
   });
 
 (async () => {
-  console.log('Start')
+  console.log("Start");
   for (let i = 0; i < 100000; i++) {
-    console.log(`Begin loop: ${i}`)
+    console.log(`Begin loop: ${i}`);
     await Promise.all([
       createOrder(),
       createOrder(),
@@ -77,8 +76,8 @@ const createOrder = () =>
       createOrder(),
       createOrder(),
       createOrder(),
-      createOrder(),
+      createOrder()
     ]);
-    console.log(`End loop: ${i}`)
+    console.log(`End loop: ${i}`);
   }
 })();
