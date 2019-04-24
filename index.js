@@ -1,11 +1,11 @@
 const randomName = require("random-name");
 const { Client } = require("@elastic/elasticsearch");
-const moment = require("moment");
 const random = require("random");
 const uuid = require("uuid/v4");
+require('dotenv').config()
 
 const client = new Client({
-  node: "",
+  node: process.env.ES_URL,
   apiVersion: "6.6"
 });
 
@@ -62,22 +62,15 @@ const createOrder = () =>
     }
   });
 
+
 (async () => {
   console.log("Start");
-  for (let i = 0; i < 100000; i++) {
+  console.log(`Runners: ${process.env.RUNNERS}, loops: ${process.env.LOOPS}, url: ${process.env.ES_URL}`)
+  for (let i = 0; i < +process.env.LOOPS || 1; i++) {
     console.log(`Begin loop: ${i}`);
-    await Promise.all([
-      createOrder(),
-      createOrder(),
-      createOrder(),
-      createOrder(),
-      createOrder(),
-      createOrder(),
-      createOrder(),
-      createOrder(),
-      createOrder(),
-      createOrder()
-    ]);
+    const runners = (new Array(+process.env.RUNNERS || 10)).fill()
+
+    await Promise.all(runners.map(createOrder));
     console.log(`End loop: ${i}`);
   }
 })();
