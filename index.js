@@ -83,7 +83,7 @@ const createAndRetry = async count => {
 (async () => {
   console.log("Start");
   console.log(`Runners: ${process.env.RUNNERS || 10}, loops: ${process.env.LOOPS || 1}, url: ${process.env.ES_URL}`)
-  for (let i = 0; i < +process.env.LOOPS || 1; i++) {
+  for (let i = 0; i < (+process.env.LOOPS || 1); i++) {
     console.log(`Begin loop: ${i}`);
     await createAndRetry(+process.env.RUNNERS || 10)
     console.log(`End loop: ${i}`);
