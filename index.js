@@ -62,15 +62,30 @@ const createOrder = () =>
     }
   });
 
+const createAndRetry = async count => {
+  const runners = (new Array(count)).fill()
+  const results = await Promise.all(runners.map(async () => {
+    try {
+      await createOrder()
+      return 'SUCCESS'
+    } catch (error) {
+      return 'FAILED'
+    }
+  }))
+  const failedResults = results.filter(result => result === 'FAILED')
+  if (failedResults.length > 0) {
+    console.log(`Retring ${failedResults.length} request`)
+    await createAndRetry(failedResults.length)
+  }
+}
+
 
 (async () => {
   console.log("Start");
-  console.log(`Runners: ${process.env.RUNNERS}, loops: ${process.env.LOOPS}, url: ${process.env.ES_URL}`)
+  console.log(`Runners: ${process.env.RUNNERS || 10}, loops: ${process.env.LOOPS || 1}, url: ${process.env.ES_URL}`)
   for (let i = 0; i < +process.env.LOOPS || 1; i++) {
     console.log(`Begin loop: ${i}`);
-    const runners = (new Array(+process.env.RUNNERS || 10)).fill()
-
-    await Promise.all(runners.map(createOrder));
+    await createAndRetry(+process.env.RUNNERS || 10)
     console.log(`End loop: ${i}`);
   }
 })();
